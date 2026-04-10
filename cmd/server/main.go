@@ -180,7 +180,7 @@ func main() {
 	router := gin.New()
 
 	// Setup routes
-	setupRoutes(router, h, cfg)
+	setupRoutes(router, h, cfg, sugar)
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.Server.Port,

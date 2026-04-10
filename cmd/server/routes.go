@@ -2,15 +2,16 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 
 	"github.com/ronaldocristover/app-monitoring/internal/config"
 	"github.com/ronaldocristover/app-monitoring/internal/middleware"
 )
 
-func setupRoutes(router *gin.Engine, h *handlers, cfg *config.Config) {
+func setupRoutes(router *gin.Engine, h *handlers, cfg *config.Config, sugar *zap.SugaredLogger) {
 	// Middleware
-	router.Use(middleware.Recovery(nil))
-	router.Use(middleware.Logger(nil))
+	router.Use(middleware.Recovery(sugar))
+	router.Use(middleware.Logger(sugar))
 	router.Use(middleware.CORS(middleware.CORSConfig{
 		AllowedOrigins:   cfg.CORS.AllowedOrigins,
 		AllowedMethods:   cfg.CORS.AllowedMethods,

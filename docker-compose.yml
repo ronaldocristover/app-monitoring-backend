@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -11,19 +9,36 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
     ports:
       - "8080:8080"
     environment:
+      PORT: 8080
+      ENV: production
+      SHUTDOWN_TIMEOUT: 30s
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USER: app
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: app_monitoring
+      POSTGRES_MAX_OPEN: 25
+      POSTGRES_MAX_IDLE: 5
+      JWT_SECRET: app-monitoring-jwt-secret-key-2026-min-32chars
+      JWT_EXPIRY: 24h
+      JWT_REFRESH_EXPIRY: 168h
+      CORS_ALLOWED_ORIGINS: "*"
+      CORS_ALLOW_CREDENTIALS: true
+      CORS_MAX_AGE: 86400s
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
