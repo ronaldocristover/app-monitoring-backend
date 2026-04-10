@@ -1,0 +1,2344 @@
+basePath: /
+definitions:
+  model.App:
+    properties:
+      app_name:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      environments:
+        items:
+          $ref: '#/definitions/model.Environment'
+        type: array
+      id:
+        type: string
+      tags:
+        type: string
+    type: object
+  model.Backup:
+    properties:
+      enabled:
+        type: boolean
+      id:
+        type: string
+      last_backup_time:
+        type: string
+      path:
+        type: string
+      schedule:
+        type: string
+      service:
+        $ref: '#/definitions/model.Service'
+      service_id:
+        type: string
+      status:
+        type: string
+    type: object
+  model.CreateAppRequest:
+    properties:
+      app_name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      description:
+        maxLength: 1000
+        type: string
+      tags:
+        maxLength: 1000
+        type: string
+    required:
+    - app_name
+    type: object
+  model.CreateBackupRequest:
+    properties:
+      enabled:
+        type: boolean
+      path:
+        maxLength: 500
+        type: string
+      schedule:
+        maxLength: 100
+        type: string
+      service_id:
+        type: string
+    required:
+    - service_id
+    type: object
+  model.CreateDeploymentRequest:
+    properties:
+      config:
+        type: string
+      container_name:
+        maxLength: 255
+        type: string
+      method:
+        maxLength: 100
+        minLength: 1
+        type: string
+      port:
+        maximum: 65535
+        minimum: 1
+        type: integer
+      service_id:
+        type: string
+    required:
+    - method
+    - service_id
+    type: object
+  model.CreateEnvironmentRequest:
+    properties:
+      app_id:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - app_id
+    - name
+    type: object
+  model.CreateFullAppRequest:
+    properties:
+      app_name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      description:
+        maxLength: 1000
+        type: string
+      environments:
+        items:
+          $ref: '#/definitions/model.EnvironmentInput'
+        type: array
+      tags:
+        maxLength: 1000
+        type: string
+    required:
+    - app_name
+    type: object
+  model.CreateServerRequest:
+    properties:
+      ip:
+        maxLength: 45
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      provider:
+        maxLength: 100
+        type: string
+    required:
+    - ip
+    - name
+    type: object
+  model.CreateServiceRequest:
+    properties:
+      db_host:
+        maxLength: 500
+        type: string
+      db_type:
+        maxLength: 100
+        type: string
+      environment_id:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      repository:
+        maxLength: 500
+        type: string
+      server_id:
+        type: string
+      stack_framework:
+        maxLength: 100
+        type: string
+      stack_language:
+        maxLength: 100
+        type: string
+      type:
+        maxLength: 100
+        type: string
+      url:
+        maxLength: 500
+        type: string
+    required:
+    - environment_id
+    - name
+    - server_id
+    type: object
+  model.Deployment:
+    properties:
+      config:
+        type: string
+      container_name:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      method:
+        type: string
+      port:
+        type: integer
+      service:
+        $ref: '#/definitions/model.Service'
+      service_id:
+        type: string
+    type: object
+  model.Environment:
+    properties:
+      app:
+        $ref: '#/definitions/model.App'
+      app_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/model.Service'
+        type: array
+    type: object
+  model.EnvironmentInput:
+    properties:
+      id:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/model.ServiceInput'
+        type: array
+    required:
+    - name
+    type: object
+  model.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.LoginResponse:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+    type: object
+  model.MonitoringConfig:
+    properties:
+      enabled:
+        type: boolean
+      id:
+        type: string
+      ping_interval_seconds:
+        type: integer
+      retries:
+        type: integer
+      service:
+        $ref: '#/definitions/model.Service'
+      service_id:
+        type: string
+      timeout_seconds:
+        type: integer
+    type: object
+  model.MonitoringLog:
+    properties:
+      checked_at:
+        type: string
+      error_message:
+        type: string
+      id:
+        type: string
+      response_time_ms:
+        type: integer
+      service:
+        $ref: '#/definitions/model.Service'
+      service_id:
+        type: string
+      status:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  model.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  model.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  model.Server:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+      provider:
+        type: string
+    type: object
+  model.Service:
+    properties:
+      backups:
+        items:
+          $ref: '#/definitions/model.Backup'
+        type: array
+      created_at:
+        type: string
+      db_host:
+        type: string
+      db_type:
+        type: string
+      deployments:
+        items:
+          $ref: '#/definitions/model.Deployment'
+        type: array
+      environment:
+        $ref: '#/definitions/model.Environment'
+      environment_id:
+        type: string
+      id:
+        type: string
+      monitoring_config:
+        $ref: '#/definitions/model.MonitoringConfig'
+      monitoring_logs:
+        items:
+          $ref: '#/definitions/model.MonitoringLog'
+        type: array
+      name:
+        type: string
+      repository:
+        type: string
+      server:
+        $ref: '#/definitions/model.Server'
+      server_id:
+        type: string
+      stack_framework:
+        type: string
+      stack_language:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  model.ServiceInput:
+    properties:
+      db_host:
+        maxLength: 500
+        type: string
+      db_type:
+        maxLength: 100
+        type: string
+      id:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      repository:
+        maxLength: 500
+        type: string
+      server_id:
+        type: string
+      stack_framework:
+        maxLength: 100
+        type: string
+      stack_language:
+        maxLength: 100
+        type: string
+      type:
+        maxLength: 100
+        type: string
+      url:
+        maxLength: 500
+        type: string
+    required:
+    - name
+    - server_id
+    type: object
+  model.UpdateAppRequest:
+    properties:
+      app_name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      description:
+        maxLength: 1000
+        type: string
+      tags:
+        maxLength: 1000
+        type: string
+    type: object
+  model.UpdateBackupRequest:
+    properties:
+      enabled:
+        type: boolean
+      path:
+        maxLength: 500
+        type: string
+      schedule:
+        maxLength: 100
+        type: string
+      status:
+        maxLength: 50
+        type: string
+    type: object
+  model.UpdateDeploymentRequest:
+    properties:
+      config:
+        type: string
+      container_name:
+        maxLength: 255
+        type: string
+      method:
+        maxLength: 100
+        minLength: 1
+        type: string
+      port:
+        maximum: 65535
+        minimum: 1
+        type: integer
+    type: object
+  model.UpdateEnvironmentRequest:
+    properties:
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+    type: object
+  model.UpdateFullAppRequest:
+    properties:
+      app_name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      description:
+        maxLength: 1000
+        type: string
+      environments:
+        items:
+          $ref: '#/definitions/model.EnvironmentInput'
+        type: array
+      tags:
+        maxLength: 1000
+        type: string
+    type: object
+  model.UpdateMonitoringConfigRequest:
+    properties:
+      enabled:
+        type: boolean
+      ping_interval_seconds:
+        minimum: 5
+        type: integer
+      retries:
+        maximum: 10
+        minimum: 0
+        type: integer
+      timeout_seconds:
+        minimum: 1
+        type: integer
+    type: object
+  model.UpdateServerRequest:
+    properties:
+      ip:
+        maxLength: 45
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      provider:
+        maxLength: 100
+        type: string
+    type: object
+  model.UpdateServiceRequest:
+    properties:
+      db_host:
+        maxLength: 500
+        type: string
+      db_type:
+        maxLength: 100
+        type: string
+      environment_id:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      repository:
+        maxLength: 500
+        type: string
+      server_id:
+        type: string
+      stack_framework:
+        maxLength: 100
+        type: string
+      stack_language:
+        maxLength: 100
+        type: string
+      type:
+        maxLength: 100
+        type: string
+      url:
+        maxLength: 500
+        type: string
+    type: object
+  model.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      error: {}
+      success:
+        type: boolean
+    type: object
+  response.PaginatedResponse:
+    properties:
+      data: {}
+      meta:
+        $ref: '#/definitions/response.PaginationMeta'
+      success:
+        type: boolean
+    type: object
+  response.PaginationMeta:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  response.SuccessResponse:
+    properties:
+      data: {}
+      success:
+        type: boolean
+    type: object
+  service.DashboardStats:
+    properties:
+      environment_breakdown:
+        items:
+          $ref: '#/definitions/service.EnvironmentBreakdownItem'
+        type: array
+      recent_incidents:
+        items:
+          $ref: '#/definitions/service.RecentIncident'
+        type: array
+      services_down:
+        type: integer
+      services_up:
+        type: integer
+      total_apps:
+        type: integer
+      total_services:
+        type: integer
+    type: object
+  service.EnvironmentBreakdownItem:
+    properties:
+      app_name:
+        type: string
+      environment:
+        type: string
+      environment_id:
+        type: string
+      total_services:
+        type: integer
+    type: object
+  service.RecentIncident:
+    properties:
+      checked_at:
+        type: string
+      error_message:
+        type: string
+      service_id:
+        type: string
+      service_name:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: admin@app-monitoring.com
+    name: API Support
+  description: Application Monitoring and Management System Backend API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: App Monitoring & Management API
+  version: 1.0.0
+paths:
+  /api/v1/dashboard:
+    get:
+      description: Returns dashboard stats with total apps, services up/down, recent
+        incidents, and environment breakdown
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.DashboardStats'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get dashboard stats
+      tags:
+      - dashboard
+  /apps:
+    get:
+      description: Get paginated list of apps with optional search and tag filters
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 20
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      - description: Search by app name
+        in: query
+        name: search
+        type: string
+      - description: Filter by tags
+        in: query
+        name: tags
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.PaginatedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.App'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List apps
+      tags:
+      - apps
+    post:
+      consumes:
+      - application/json
+      description: Create a new application
+      parameters:
+      - description: App data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateAppRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create an app
+      tags:
+      - apps
+  /apps/{id}:
+    delete:
+      description: Delete an app by ID
+      parameters:
+      - description: App ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete an app
+      tags:
+      - apps
+    get:
+      description: Get a single app by UUID (without nested resources)
+      parameters:
+      - description: App ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get an app by ID
+      tags:
+      - apps
+    put:
+      consumes:
+      - application/json
+      description: Update app fields (name, description, tags)
+      parameters:
+      - description: App ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update an app
+      tags:
+      - apps
+  /apps/{id}/detail:
+    get:
+      description: Get a single app with environments and services
+      parameters:
+      - description: App ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get app detail
+      tags:
+      - apps
+  /apps/{id}/full:
+    put:
+      consumes:
+      - application/json
+      description: Update a full app with environments and services in a single request
+      parameters:
+      - description: App ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Full app update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateFullAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update app with nested resources
+      tags:
+      - apps
+  /apps/full:
+    post:
+      consumes:
+      - application/json
+      description: Create a full app with environments and services in a single request
+      parameters:
+      - description: Full app data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateFullAppRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create app with nested resources
+      tags:
+      - apps
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.LoginResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Login user
+      tags:
+      - auth
+  /auth/me:
+    get:
+      description: Get the authenticated user's profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Exchange a valid refresh token for a new access token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.LoginResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account and return JWT token
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.LoginResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - auth
+  /backups/{id}:
+    delete:
+      description: Delete a backup by ID
+      parameters:
+      - description: Backup ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete backup
+      tags:
+      - backups
+    get:
+      description: Get backup by ID
+      parameters:
+      - description: Backup ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get backup
+      tags:
+      - backups
+    put:
+      consumes:
+      - application/json
+      description: Update an existing backup configuration
+      parameters:
+      - description: Backup ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Backup data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateBackupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update backup
+      tags:
+      - backups
+  /deployments/{id}:
+    delete:
+      description: Delete a deployment by ID
+      parameters:
+      - description: Deployment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete deployment
+      tags:
+      - deployments
+    get:
+      description: Get deployment by ID
+      parameters:
+      - description: Deployment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get deployment
+      tags:
+      - deployments
+    put:
+      consumes:
+      - application/json
+      description: Update an existing deployment
+      parameters:
+      - description: Deployment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Deployment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateDeploymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update deployment
+      tags:
+      - deployments
+  /environments:
+    get:
+      description: Get paginated list of environments with optional app filter
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 20
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      - description: Filter by app ID (UUID)
+        in: query
+        name: app_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.PaginatedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Environment'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List environments
+      tags:
+      - environments
+    post:
+      consumes:
+      - application/json
+      description: Create a new environment for an app
+      parameters:
+      - description: Environment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateEnvironmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Environment'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create an environment
+      tags:
+      - environments
+  /environments/{id}:
+    delete:
+      description: Delete an environment by ID
+      parameters:
+      - description: Environment ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete an environment
+      tags:
+      - environments
+    get:
+      description: Get a single environment by UUID
+      parameters:
+      - description: Environment ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Environment'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get an environment by ID
+      tags:
+      - environments
+    put:
+      consumes:
+      - application/json
+      description: Update environment fields (name)
+      parameters:
+      - description: Environment ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateEnvironmentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Environment'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update an environment
+      tags:
+      - environments
+  /health:
+    get:
+      description: Basic health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Health check
+      tags:
+      - health
+  /health/detailed:
+    get:
+      description: Detailed health with DB stats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Detailed health check
+      tags:
+      - health
+  /health/live:
+    get:
+      description: Check if the application is alive
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Liveness probe
+      tags:
+      - health
+  /health/ready:
+    get:
+      description: Check if the application is ready to serve traffic
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Readiness probe
+      tags:
+      - health
+  /health/status:
+    get:
+      description: Check service and database status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Health status
+      tags:
+      - health
+  /servers:
+    get:
+      description: Get paginated list of servers with optional search filter
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 20
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      - description: Search by name or IP
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.PaginatedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Server'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List servers
+      tags:
+      - servers
+    post:
+      consumes:
+      - application/json
+      description: Create a new server
+      parameters:
+      - description: Server data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateServerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Server'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a server
+      tags:
+      - servers
+  /servers/{id}:
+    delete:
+      description: Delete a server by ID
+      parameters:
+      - description: Server ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a server
+      tags:
+      - servers
+    get:
+      description: Get a single server by UUID
+      parameters:
+      - description: Server ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Server'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a server by ID
+      tags:
+      - servers
+    put:
+      consumes:
+      - application/json
+      description: Update server fields (name, ip, provider)
+      parameters:
+      - description: Server ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Server'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a server
+      tags:
+      - servers
+  /services:
+    get:
+      description: List services with pagination and filters
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by environment ID
+        in: query
+        name: environment_id
+        type: string
+      - description: Filter by server ID
+        in: query
+        name: server_id
+        type: string
+      - description: Search by name
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List services
+      tags:
+      - services
+    post:
+      consumes:
+      - application/json
+      description: Register a new service
+      parameters:
+      - description: Service data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a service
+      tags:
+      - services
+  /services/{id}:
+    delete:
+      description: Delete a service by ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete service
+      tags:
+      - services
+    get:
+      description: Get service details
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get service by ID
+      tags:
+      - services
+    put:
+      consumes:
+      - application/json
+      description: Update an existing service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Service data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update service
+      tags:
+      - services
+  /services/{id}/backups:
+    get:
+      description: List backups for a service with pagination
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List backups
+      tags:
+      - backups
+    post:
+      consumes:
+      - application/json
+      description: Create a new backup configuration for a service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Backup data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateBackupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create backup
+      tags:
+      - backups
+  /services/{id}/deployments:
+    get:
+      description: List deployments for a service with pagination
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List deployments
+      tags:
+      - deployments
+    post:
+      consumes:
+      - application/json
+      description: Create a new deployment for a service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Deployment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateDeploymentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create deployment
+      tags:
+      - deployments
+  /services/{id}/logs:
+    get:
+      description: Get paginated monitoring logs for a service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by status (up/down)
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List monitoring logs
+      tags:
+      - monitoring-logs
+  /services/{id}/monitoring:
+    get:
+      description: Get monitoring configuration for a service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get monitoring config
+      tags:
+      - monitoring
+    put:
+      consumes:
+      - application/json
+      description: Create or update monitoring configuration for a service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Config data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateMonitoringConfigRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Upsert monitoring config
+      tags:
+      - monitoring
+  /services/{id}/ping:
+    post:
+      description: Perform a manual HTTP GET ping to the service and record the result
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Manual ping
+      tags:
+      - services
+  /users:
+    get:
+      description: Get paginated list of users with optional search filter
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 20
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      - description: Search name/email
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.PaginatedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.User'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List users
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - users
+    get:
+      description: Get a single user by their UUID
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user profile (name, email)
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - users
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
