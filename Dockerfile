@@ -17,6 +17,9 @@ WORKDIR /root/
 
 COPY --from=builder /app/server .
 
+# Copy docs for swagger
+COPY docs/ /docs/
+
 EXPOSE 8080
 
 CMD ["./server"]
