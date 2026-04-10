@@ -97,5 +97,15 @@ func (r *appRepository) List(ctx context.Context, filter *model.ListAppsRequest)
 		return nil, 0, err
 	}
 
+	// Populate total_services and total_environments for each app
+	for _, app := range apps {
+		r.db.WithContext(ctx).Model(&model.Environment{}).Where("app_id = ?", app.ID).Count(&app.TotalEnvironments)
+		r.db.WithContext(ctx).
+			Table("services").
+			Joins("JOIN environments ON environments.id = services.environment_id").
+			Where("environments.app_id = ?", app.ID).
+			Count(&app.TotalServices)
+	}
+
 	return apps, total, nil
 }

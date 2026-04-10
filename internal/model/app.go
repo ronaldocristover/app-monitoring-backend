@@ -8,12 +8,14 @@ import (
 )
 
 type App struct {
-	ID           uuid.UUID    `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	AppName      string       `gorm:"not null;size:255" json:"app_name"`
-	Description  string       `gorm:"size:1000" json:"description"`
-	Tags         string       `gorm:"size:1000" json:"tags"`
-	Environments []Environment `gorm:"foreignKey:AppID" json:"environments,omitempty"`
-	CreatedAt    time.Time    `gorm:"autoCreateTime" json:"created_at"`
+	ID                uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
+	AppName           string         `gorm:"not null;size:255" json:"app_name"`
+	Description       string         `gorm:"size:1000" json:"description"`
+	Tags              string         `gorm:"size:1000" json:"tags"`
+	Environments      []Environment  `gorm:"foreignKey:AppID" json:"environments,omitempty"`
+	TotalServices     int64          `gorm:"-" json:"total_services"`
+	TotalEnvironments int64          `gorm:"-" json:"total_environments"`
+	CreatedAt         time.Time      `gorm:"autoCreateTime" json:"created_at"`
 }
 
 func (a *App) BeforeCreate(tx *gorm.DB) error {
