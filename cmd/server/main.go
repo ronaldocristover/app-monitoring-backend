@@ -35,6 +35,7 @@ import (
 
 	"github.com/ronaldocristover/app-monitoring/internal/config"
 	"github.com/ronaldocristover/app-monitoring/internal/handler"
+	_ "github.com/ronaldocristover/app-monitoring/docs"
 	"github.com/ronaldocristover/app-monitoring/internal/model"
 	"github.com/ronaldocristover/app-monitoring/internal/repository"
 	"github.com/ronaldocristover/app-monitoring/internal/scheduler"
