@@ -10,6 +10,14 @@ import (
 	"github.com/ronaldocristover/app-monitoring/pkg/response"
 )
 
+// JWTClaims represents the JWT claims structure.
+type JWTClaims struct {
+	UserID uuid.UUID `json:"user_id"`
+	Email  string    `json:"email"`
+	Type   string    `json:"type"`
+	jwt.RegisteredClaims
+}
+
 func Auth(jwtSecret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
@@ -28,11 +36,7 @@ func Auth(jwtSecret string) gin.HandlerFunc {
 
 		tokenString := parts[1]
 
-		token, err := jwt.ParseWithClaims(tokenString, &struct {
-			UserID uuid.UUID `json:"user_id"`
-			Email  string    `json:"email"`
-			jwt.RegisteredClaims
-		}{}, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, jwt.ErrSignatureInvalid
 			}
@@ -45,11 +49,7 @@ func Auth(jwtSecret string) gin.HandlerFunc {
 			return
 		}
 
-		claims, ok := token.Claims.(*struct {
-			UserID uuid.UUID `json:"user_id"`
-			Email  string    `json:"email"`
-			jwt.RegisteredClaims
-		})
+		claims, ok := token.Claims.(*JWTClaims)
 		if !ok {
 			response.Error(c, apierror.Unauthorized("Invalid token claims"))
 			c.Abort()

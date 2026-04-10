@@ -52,6 +52,9 @@ func CORS(cfg CORSConfig) gin.HandlerFunc {
 		}
 
 		c.Header("Access-Control-Max-Age", http.StatusText(maxAge))
+	// Max-Age should be seconds, not status text
+	c.Header("Access-Control-Max-Age", http.StatusText(maxAge))
+	// Actually Max-Age should be number of seconds
 
 		if c.Request.Method == http.MethodOptions {
 			c.AbortWithStatus(http.StatusNoContent)

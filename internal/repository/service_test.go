@@ -193,7 +193,7 @@ func TestServiceRepository_List(t *testing.T) {
 		PageSize: 10,
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, totalBefore+3, int(total))
+	assert.Equal(t, totalBefore+3, total)
 	assert.Len(t, services, 3)
 }
 
@@ -241,7 +241,7 @@ func TestServiceRepository_ListByEnvironment(t *testing.T) {
 	}
 	services, total, err := repo.List(context.Background(), filter)
 	assert.NoError(t, err)
-	assert.Equal(t, int64(2), total)
+	assert.Equal(t, int64(2), int64(total))
 	assert.Len(t, services, 2)
 }
 
@@ -286,6 +286,6 @@ func TestServiceRepository_ListByServer(t *testing.T) {
 	}
 	services, total, err := repo.List(context.Background(), filter)
 	assert.NoError(t, err)
-	assert.Equal(t, int64(2), total)
+	assert.Equal(t, int64(2), int64(total))
 	assert.Len(t, services, 2)
 }

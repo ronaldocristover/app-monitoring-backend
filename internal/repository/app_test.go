@@ -152,7 +152,7 @@ func TestAppRepository_List(t *testing.T) {
 		PageSize: 10,
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, totalBefore+3, int(total))
+	assert.Equal(t, totalBefore+3, total)
 	assert.Len(t, apps, 3)
 }
 
