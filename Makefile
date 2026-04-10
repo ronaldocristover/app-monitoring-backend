@@ -19,6 +19,12 @@ migrate-down:
 	migrate -path ./migrations -database "postgres://app:secret@localhost:5432/app_monitoring?sslmode=disable" -down
 
 dev:
+
+seed:
+	@echo "Seeding database..."
+	go run ./cmd/seed
+
+.PHONY: seed
 	godotenv -f .env go run ./cmd/server
 
 # Generate mocks for handler tests
