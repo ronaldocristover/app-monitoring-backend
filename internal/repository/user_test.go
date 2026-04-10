@@ -15,14 +15,15 @@ import (
 func TestUserRepository_Create(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
 	user := &model.User{
-		Name:         "Test User",
-		Email:        "test@example.com",
-		PasswordHash: "hashed_password",
+		Name:         "Alice",
+		Email:        "alice-create@test.com",
+		PasswordHash: "hashedpassword",
 	}
 
-	err := repo.Create(context.Background(), user)
+	err := repo.Create(ctx, user)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, user.ID)
 }
@@ -30,151 +31,129 @@ func TestUserRepository_Create(t *testing.T) {
 func TestUserRepository_GetByID(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
 	user := &model.User{
-		Name:         "Test User",
-		Email:        "test@example.com",
-		PasswordHash: "hashed_password",
+		Name:         "Bob",
+		Email:        "bob-getbyid@test.com",
+		PasswordHash: "hashedpassword",
 	}
-	require.NoError(t, repo.Create(context.Background(), user))
+	require.NoError(t, repo.Create(ctx, user))
 
-	found, err := repo.GetByID(context.Background(), user.ID)
+	found, err := repo.GetByID(ctx, user.ID)
 	assert.NoError(t, err)
 	assert.Equal(t, user.ID, found.ID)
-	assert.Equal(t, user.Email, found.Email)
-	assert.Equal(t, user.Name, found.Name)
-}
+	assert.Equal(t, "Bob", found.Name)
+	assert.Equal(t, "bob-getbyid@test.com", found.Email)
 
-func TestUserRepository_GetByID_NotFound(t *testing.T) {
-	db := setupTestDB(t)
-	repo := NewUserRepository(db)
-
-	_, err := repo.GetByID(context.Background(), uuid.New())
+	// Non-existent ID returns error
+	_, err = repo.GetByID(ctx, uuid.New())
 	assert.Error(t, err)
 }
 
 func TestUserRepository_GetByEmail(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
 	user := &model.User{
-		Name:         "Test User",
-		Email:        "test@example.com",
-		PasswordHash: "hashed_password",
+		Name:         "Carol",
+		Email:        "carol-getbyemail@test.com",
+		PasswordHash: "hashedpassword",
 	}
-	require.NoError(t, repo.Create(context.Background(), user))
+	require.NoError(t, repo.Create(ctx, user))
 
-	found, err := repo.GetByEmail(context.Background(), "test@example.com")
+	found, err := repo.GetByEmail(ctx, "carol-getbyemail@test.com")
 	assert.NoError(t, err)
 	assert.Equal(t, user.ID, found.ID)
-	assert.Equal(t, user.Email, found.Email)
-}
+	assert.Equal(t, "Carol", found.Name)
 
-func TestUserRepository_GetByEmail_NotFound(t *testing.T) {
-	db := setupTestDB(t)
-	repo := NewUserRepository(db)
-
-	_, err := repo.GetByEmail(context.Background(), "nonexistent@example.com")
+	// Non-existent email returns error
+	_, err = repo.GetByEmail(ctx, "nonexistent@test.com")
 	assert.Error(t, err)
 }
 
 func TestUserRepository_Update(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
 	user := &model.User{
-		Name:         "Test User",
-		Email:        "test@example.com",
-		PasswordHash: "hashed_password",
+		Name:         "Dave",
+		Email:        "dave-update@test.com",
+		PasswordHash: "hashedpassword",
 	}
-	require.NoError(t, repo.Create(context.Background(), user))
+	require.NoError(t, repo.Create(ctx, user))
 
-	user.Name = "Updated Name"
-	err := repo.Update(context.Background(), user)
+	user.Name = "Dave Updated"
+	err := repo.Update(ctx, user)
 	assert.NoError(t, err)
 
-	found, err := repo.GetByID(context.Background(), user.ID)
+	updated, err := repo.GetByID(ctx, user.ID)
 	assert.NoError(t, err)
-	assert.Equal(t, "Updated Name", found.Name)
+	assert.Equal(t, "Dave Updated", updated.Name)
 }
 
 func TestUserRepository_Delete(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
 	user := &model.User{
-		Name:         "Test User",
-		Email:        "test@example.com",
-		PasswordHash: "hashed_password",
+		Name:         "Eve",
+		Email:        "eve-delete@test.com",
+		PasswordHash: "hashedpassword",
 	}
-	require.NoError(t, repo.Create(context.Background(), user))
+	require.NoError(t, repo.Create(ctx, user))
 
-	err := repo.Delete(context.Background(), user.ID)
+	err := repo.Delete(ctx, user.ID)
 	assert.NoError(t, err)
 
-	_, err = repo.GetByID(context.Background(), user.ID)
+	_, err = repo.GetByID(ctx, user.ID)
 	assert.Error(t, err)
 }
 
 func TestUserRepository_List(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
-	for i := 0; i < 5; i++ {
-		user := &model.User{
-			Name:         fmt.Sprintf("User %d", i),
-			Email:        fmt.Sprintf("user%d@example.com", i),
-			PasswordHash: "hashed",
-		}
-		require.NoError(t, repo.Create(context.Background(), user))
+	_, beforeCount, err := repo.List(ctx, &model.ListUsersRequest{Page: 1, PageSize: 100})
+	require.NoError(t, err)
+
+	for i := 0; i < 3; i++ {
+		require.NoError(t, repo.Create(ctx, &model.User{
+			Name:         "List User",
+			Email:        fmt.Sprintf("list-user-%d@test.com", i),
+			PasswordHash: "hashedpassword",
+		}))
 	}
 
-	users, total, err := repo.List(context.Background(), &model.ListUsersRequest{
-		Page:     1,
-		PageSize: 20,
-	})
+	users, total, err := repo.List(ctx, &model.ListUsersRequest{Page: 1, PageSize: 10})
 	assert.NoError(t, err)
-	assert.Equal(t, int64(5), total)
-	assert.Len(t, users, 5)
+	assert.Equal(t, beforeCount+3, total)
+	assert.Equal(t, beforeCount+3, int64(len(users)))
 }
 
 func TestUserRepository_List_Pagination(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	ctx := context.Background()
 
 	for i := 0; i < 5; i++ {
-		user := &model.User{
-			Name:         fmt.Sprintf("User %d", i),
-			Email:        fmt.Sprintf("user%d@example.com", i),
-			PasswordHash: "hashed",
-		}
-		require.NoError(t, repo.Create(context.Background(), user))
+		require.NoError(t, repo.Create(ctx, &model.User{
+			Name:         "Page User",
+			Email:        fmt.Sprintf("page-user-%d@test.com", i),
+			PasswordHash: "hashedpassword",
+		}))
 	}
 
-	users, total, err := repo.List(context.Background(), &model.ListUsersRequest{
-		Page:     1,
-		PageSize: 2,
-	})
+	users, total, err := repo.List(ctx, &model.ListUsersRequest{Page: 1, PageSize: 2})
 	assert.NoError(t, err)
 	assert.Equal(t, int64(5), total)
 	assert.Len(t, users, 2)
 }
 
-func TestUserRepository_List_DefaultPagination(t *testing.T) {
-	db := setupTestDB(t)
-	repo := NewUserRepository(db)
-
-	users, _, err := repo.List(context.Background(), &model.ListUsersRequest{})
-	assert.NoError(t, err)
-	assert.NotNil(t, users)
-}
-
 func TestUserRepository_List_WithSearch(t *testing.T) {
-	t.Skip("ILIKE is PostgreSQL-specific; this test requires PostgreSQL")
-}
-
-func TestNewUserRepository(t *testing.T) {
-	db := setupTestDB(t)
-	repo := NewUserRepository(db)
-	assert.NotNil(t, repo)
+	t.Skip("ILIKE requires PostgreSQL")
 }

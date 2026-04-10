@@ -1,4 +1,4 @@
-.PHONY: build run test clean migrate-up migrate-down
+.PHONY: build run test clean mocks
 
 build:
 	go build -o bin/server ./cmd/server
@@ -20,3 +20,8 @@ migrate-down:
 
 dev:
 	godotenv -f .env go run ./cmd/server
+
+# Generate mocks for handler tests
+mocks:
+	@echo "Generating mocks..."
+	@/root/go/bin/mockery --config .mockery.yaml
