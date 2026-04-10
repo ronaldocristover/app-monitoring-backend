@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 
 	"github.com/ronaldocristover/app-monitoring/internal/config"
@@ -25,6 +27,7 @@ func setupRoutes(router *gin.Engine, h *handlers, cfg *config.Config, sugar *zap
 	// Public routes
 	registerHealthRoutes(router, h)
 	registerAuthRoutes(router, h)
+	registerSwaggerRoutes(router)
 
 	// Protected routes (JWT auth)
 	protected := router.Group("")
@@ -55,6 +58,10 @@ func registerAuthRoutes(router *gin.Engine, h *handlers) {
 		auth.POST("/login", h.Auth.Login)
 		auth.POST("/refresh", h.Auth.RefreshToken)
 	}
+}
+
+func registerSwaggerRoutes(router *gin.Engine) {
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 func registerDashboardRoutes(protected *gin.RouterGroup, h *handlers) {
