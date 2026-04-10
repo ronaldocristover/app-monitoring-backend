@@ -1,0 +1,97 @@
+package middleware
+
+import (
+	"sync"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/ronaldocristover/app-monitoring/pkg/apierror"
+	"github.com/ronaldocristover/app-monitoring/pkg/response"
+)
+
+type RateLimiter struct {
+	visitors map[string]*visitor
+	mu       sync.RWMutex
+	rate     int
+	window   time.Duration
+	stopCh   chan struct{}
+}
+
+type visitor struct {
+	count    int
+	lastSeen time.Time
+}
+
+func NewRateLimiter(rate int, window time.Duration) *RateLimiter {
+	rl := &RateLimiter{
+		visitors: make(map[string]*visitor),
+		rate:     rate,
+		window:   window,
+	}
+
+	rl.stopCh = make(chan struct{})
+
+	go func() {
+		ticker := time.NewTicker(time.Minute)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				rl.cleanup()
+			case <-rl.stopCh:
+				return
+			}
+		}
+	}()
+
+	return rl
+}
+
+func (rl *RateLimiter) cleanup() {
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+
+	for ip, v := range rl.visitors {
+		if time.Since(v.lastSeen) > rl.window {
+			delete(rl.visitors, ip)
+		}
+	}
+}
+
+func (rl *RateLimiter) getVisitor(ip string) *visitor {
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+
+	v, exists := rl.visitors[ip]
+	if !exists {
+		v = &visitor{lastSeen: time.Now()}
+		rl.visitors[ip] = v
+	}
+
+	v.lastSeen = time.Now()
+	v.count++
+
+	return v
+}
+
+// Stop terminates the background cleanup goroutine.
+func (rl *RateLimiter) Stop() {
+	close(rl.stopCh)
+}
+
+func RateLimit() gin.HandlerFunc {
+	limiter := NewRateLimiter(100, time.Minute)
+
+	return func(c *gin.Context) {
+		ip := c.ClientIP()
+		v := limiter.getVisitor(ip)
+
+		if v.count > limiter.rate {
+			response.Error(c, apierror.TooManyRequests("Too many requests. Please try again later."))
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
+}
